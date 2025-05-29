@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <time.h>
 
 auto constexpr WIDTH = 400;
@@ -22,6 +23,23 @@ int main()
     t1.loadFromFile("assets/images/background.png");
     t2.loadFromFile("assets/images/platform.png");
     t3.loadFromFile("assets/images/doodle.png");
+
+    sf::Music bgmusic;
+    bgmusic.openFromFile("assets/audio/DoodleJump_music.ogg");
+    bgmusic.setPitch(1.2f);
+    bgmusic.setVolume(50.0f);
+    bgmusic.setLoop(true);
+
+    sf::Music jumpsound;
+    jumpsound.openFromFile("assets/audio/Jump.ogg");
+    jumpsound.setPitch(1.2f);
+    jumpsound.setVolume(100.0f);
+
+    sf::Music gameoversound;
+    gameoversound.openFromFile("assets/audio/gameover.wav");
+    gameoversound.setPitch(1.2f);
+    gameoversound.setVolume(100.0f);
+    gameoversound.setPlayingOffset(sf::seconds(2.f));
 
     sf::Font font;
     sf::Text txt;
@@ -49,8 +67,10 @@ int main()
     // Rate of change in x and y directions
     float dx = 0, dy = 0;
 
+    bgmusic.play();
     while (app.isOpen())
     {
+        
         sf::Event e;
         while (app.pollEvent(e))
         {
@@ -64,11 +84,15 @@ int main()
         // Fall and Bounce motion
         dy += 0.2;
         y += dy;
+        
+
         if (y > 500)
         {
             //dy = -10;
             txt.setFillColor(sf::Color::Red);
             txt.setString("Game Over!!!");
+            bgmusic.stop();
+            gameoversound.play();
 
         }
         // Extend window view space when going up
@@ -86,8 +110,14 @@ int main()
         // Bounce on the nearest avalable platform when falling
         for (int i = 0; i < 10; i++)
         {
-            if ((x + 50 > positions[i].xpos) && (x + 20 < positions[i].xpos + 68) && (y + 70 > positions[i].ypos) 
-                && (y + 70 < positions[i].ypos + 14) && (dy > 0))  dy = -10;
+            if ((x + 50 > positions[i].xpos) && (x + 20 < positions[i].xpos + 68) && (y + 70 > positions[i].ypos)
+                && (y + 70 < positions[i].ypos + 14) && (dy > 0)) 
+            {
+                dy = -10;
+                jumpsound.stop();
+                jumpsound.play();
+            }
+            
         }
 
 
