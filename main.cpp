@@ -23,6 +23,16 @@ int main()
     t2.loadFromFile("assets/images/platform.png");
     t3.loadFromFile("assets/images/doodle.png");
 
+    sf::Font font;
+    sf::Text txt;
+
+    font.loadFromFile("./assets/fonts/8bitOperatorPlus8-Regular.ttf");
+    txt.setFont(font);
+    txt.setCharacterSize(30);
+    txt.setStyle(sf::Text::Bold);
+    txt.setFillColor(sf::Color::Blue);
+    txt.setString("Go Doodle!!!");
+
     sf::Sprite Background(t1), Platform(t2), Doodle(t3);
 
     Point positions[20];
@@ -54,8 +64,13 @@ int main()
         // Fall and Bounce motion
         dy += 0.2;
         y += dy;
-        if (y > 500)  dy = -10;
+        if (y > 500)
+        {
+            //dy = -10;
+            txt.setFillColor(sf::Color::Red);
+            txt.setString("Game Over!!!");
 
+        }
         // Extend window view space when going up
         if (y < viewportheight)
             for (int i = 0; i < 10; i++)
@@ -80,6 +95,7 @@ int main()
 
         app.draw(Background);
         app.draw(Doodle);
+        app.draw(txt);
 
         for (int i = 0; i < 10; i++)
         {
